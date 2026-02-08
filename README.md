@@ -1,6 +1,6 @@
 # Customer Inquiry Management API
 
-A robust Laravel-based REST API for managing customer inquiries submitted to the Maldives Stock Exchange website. This system provides a reliable backend for capturing, storing, and retrieving customer inquiries with proper validation and error handling.
+Laravel-based REST API for managing customer inquiries submitted to the Maldives Stock Exchange website. This system provides a reliable backend for capturing, storing, and retrieving customer inquiries with proper validation and error handling.
 
 ## 📋 Overview
 
