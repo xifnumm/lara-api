@@ -1,59 +1,450 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Customer Inquiry Management API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A robust Laravel-based REST API for managing customer inquiries submitted to the Maldives Stock Exchange website. This system provides a reliable backend for capturing, storing, and retrieving customer inquiries with proper validation and error handling.
 
-## About Laravel
+## 📋 Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This API enables visitors to submit and retrieve inquiries across four key categories:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Trading** - Questions about trading operations
+- **Market Data** - Queries about market information
+- **Technical Issues** - Technical support requests
+- **General** - General inquiries
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+All inquiries are logged reliably for compliance, auditing, and support follow-up purposes.
 
-## Learning Laravel
+## 🛠️ Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Framework:** Laravel 10.x (Latest LTS)
+- **Database:** PostgreSQL
+- **Language:** PHP 8.1+
+- **Architecture:** RESTful API (Backend only)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 📁 Project Structure
 
-## Laravel Sponsors
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   └── InquiriesController.php    # API logic
+│   └── Requests/
+│       └── StoreInquiryRequest.php    # Validation rules
+├── Models/
+│   └── Inquiry.php                     # Database model
+database/
+└── migrations/
+    └── create_inquiries_table.php      # Database schema
+routes/
+└── api.php                             # API endpoints
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🚀 Setup Instructions
 
-### Premium Partners
+### Prerequisites
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- PHP 8.1 or higher
+- Composer
+- PostgreSQL
+- PostgreSQL server (DBngin recommended)
 
-## Contributing
+### Installation Steps
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. **Clone the repository**
 
-## Code of Conduct
+```bash
+   git clone <repository-url>
+   cd inquiry-management-api
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. **Install dependencies**
 
-## Security Vulnerabilities
+```bash
+   composer install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. **Configure environment**
 
-## License
+```bash
+   cp .env.example .env
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+4. **Update database credentials in `.env`**
+
+```env
+   DB_CONNECTION=pgsql
+    DB_HOST=127.0.0.1
+    DB_PORT=5454
+    DB_DATABASE=lara-api-db
+    DB_USERNAME=postgres
+    DB_PASSWORD=
+```
+
+5. **Generate application key**
+
+```bash
+   php artisan key:generate
+```
+
+6. **Run database migrations**
+
+```bash
+   php artisan migrate
+```
+
+7. **Start the development server**
+
+```bash
+   php artisan serve
+```
+
+The API will be available at: `http://localhost:8000`
+
+## 📡 API Endpoints
+
+### Health Check
+
+```http
+GET /api/health
+```
+
+Verify API is running.
+
+**Response:**
+
+```json
+{
+    "status": "ok",
+    "message": "API is running",
+    "timestamp": "2024-02-09 10:30:00"
+}
+```
+
+---
+
+### Create Inquiry
+
+```http
+POST /api/inquiries
+```
+
+**Request Body:**
+
+```json
+{
+    "name": "Ahmed Hassan",
+    "email": "ahmed@example.mv",
+    "category": "trading",
+    "subject": "Trading Hours Query",
+    "message": "What are the trading hours for MSE?"
+}
+```
+
+**Valid Categories:**
+
+- `trading`
+- `market_data`
+- `technical_issues`
+- `general`
+
+**Success Response (201):**
+
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "Ahmed Hassan",
+        "email": "ahmed@example.mv",
+        "category": "trading",
+        "subject": "Trading Hours Query",
+        "message": "What are the trading hours for MSE?",
+        "created_at": "2024-02-09T10:30:00.000000Z",
+        "updated_at": "2024-02-09T10:30:00.000000Z"
+    },
+    "message": "Inquiry submitted successfully"
+}
+```
+
+**Validation Error Response (422):**
+
+```json
+{
+    "success": false,
+    "message": "Validation failed. Please check your input.",
+    "errors": {
+        "email": ["Please provide a valid email address."],
+        "category": [
+            "Invalid category. Choose from: trading, market_data, technical_issues, or general."
+        ]
+    }
+}
+```
+
+---
+
+### List All Inquiries
+
+```http
+GET /api/inquiries
+```
+
+**Success Response (200):**
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "name": "Ahmed Hassan",
+            "email": "ahmed@example.mv",
+            "category": "trading",
+            "subject": "Trading Hours Query",
+            "message": "What are the trading hours for MSE?",
+            "created_at": "2024-02-09T10:30:00.000000Z",
+            "updated_at": "2024-02-09T10:30:00.000000Z"
+        }
+    ],
+    "message": "Inquiries retrieved successfully"
+}
+```
+
+---
+
+### Get Specific Inquiry
+
+```http
+GET /api/inquiries/{id}
+```
+
+**Success Response (200):**
+
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "Ahmed Hassan",
+        "email": "ahmed@example.mv",
+        "category": "trading",
+        "subject": "Trading Hours Query",
+        "message": "What are the trading hours for MSE?",
+        "created_at": "2024-02-09T10:30:00.000000Z",
+        "updated_at": "2024-02-09T10:30:00.000000Z"
+    },
+    "message": "Inquiry retrieved successfully"
+}
+```
+
+**Not Found Response (404):**
+
+```json
+{
+    "success": false,
+    "message": "Inquiry not found"
+}
+```
+
+## 🧪 Testing the API
+
+### Using cURL
+
+**Create an inquiry:**
+
+```bash
+curl -X POST http://localhost:8000/api/inquiries \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Ahmed Hassan",
+    "email": "ahmed@example.mv",
+    "category": "trading",
+    "subject": "Trading Hours Query",
+    "message": "What are the trading hours for MSE?"
+  }'
+```
+
+**Get all inquiries:**
+
+```bash
+curl http://localhost:8000/api/inquiries
+```
+
+**Get specific inquiry:**
+
+```bash
+curl http://localhost:8000/api/inquiries/1
+```
+
+### Using Postman
+
+1. Import the endpoints listed above
+2. Set `Content-Type: application/json` header
+3. Use the example request bodies
+
+## 🗄️ Database Schema
+
+**Table: `inquiries`**
+
+| Column     | Type         | Constraints |
+| ---------- | ------------ | ----------- |
+| id         | BIGSERIAL    | PRIMARY KEY |
+| name       | VARCHAR(255) | NOT NULL    |
+| email      | VARCHAR(255) | NOT NULL    |
+| category   | ENUM         | NOT NULL    |
+| subject    | VARCHAR(255) | NOT NULL    |
+| message    | TEXT         | NOT NULL    |
+| created_at | TIMESTAMP    | NULL        |
+| updated_at | TIMESTAMP    | NULL        |
+
+**Category ENUM values:**
+
+- trading
+- market_data
+- technical_issues
+- general
+
+## ✨ Features
+
+### Core Features
+
+- ✅ RESTful API design with proper HTTP methods
+- ✅ PostgreSQL database integration with Eloquent ORM
+- ✅ Comprehensive validation with Form Requests
+- ✅ Database transaction handling for data integrity
+- ✅ Robust error handling with appropriate HTTP status codes
+- ✅ Consistent JSON response formatting
+- ✅ Request/error logging for debugging and compliance
+- ✅ Mass assignment protection
+- ✅ SQL injection prevention via Eloquent
+- ✅ Clean, maintainable code following Laravel conventions
+
+### Future Enhancements
+
+- 📊 Pagination for large datasets
+- 🔍 Advanced filtering (by category, date range, status)
+- 📈 Inquiry status tracking (pending, in-progress, resolved)
+- 🔐 API authentication and authorization
+- ⚡ Rate limiting to prevent abuse
+- 📧 Email notifications for new inquiries
+- 📊 Analytics and reporting dashboard
+- 🧪 Comprehensive automated testing suite
+- 🔄 Soft deletes for inquiry records
+- 🌐 Internationalization support
+
+## 🐛 Troubleshooting
+
+### Database Connection Issues
+
+**Error:** `SQLSTATE[08006] Connection refused`
+
+**Solution:**
+
+1. Ensure PostgreSQL is running (check your PostgreSQL server)
+2. Verify credentials in `.env`
+3. Check if database exists: `psql -U postgres -l`
+
+---
+
+### Migration Errors
+
+**Error:** `Base table or view not found`
+
+**Solution:**
+
+```bash
+php artisan migrate:fresh
+```
+
+---
+
+### Port Already in Use
+
+**Error:** `Address already in use`
+
+**Solution:**
+
+```bash
+php artisan serve --port=8001
+```
+
+---
+
+### Vendor Folder Missing
+
+**Error:** `Class not found`
+
+**Solution:**
+
+```bash
+composer install
+```
+
+## 📚 Laravel Conventions
+
+This project adheres to Laravel best practices:
+
+- RESTful routing patterns
+- Eloquent ORM for database interactions
+- Form Request classes for validation
+- Resource controllers for clean separation
+- Database migrations for version-controlled schema
+- Environment-based configuration
+- Proper naming conventions (singular models, plural controllers)
+
+## 🔧 Development
+
+### Running in Development
+
+```bash
+php artisan serve
+```
+
+### Database Management
+
+```bash
+# Run migrations
+php artisan migrate
+
+# Rollback last migration
+php artisan migrate:rollback
+
+# Fresh migration (drop all tables and re-migrate)
+php artisan migrate:fresh
+
+# Check migration status
+php artisan migrate:status
+```
+
+### Logs
+
+Application logs are stored in `storage/logs/laravel.log`
+
+## 📝 Configuration
+
+### Environment Variables
+
+Key configuration options in `.env`:
+
+```env
+APP_NAME=Laravel
+APP_ENV=local
+APP_DEBUG=true
+
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5454
+DB_DATABASE=lara-api-db
+DB_USERNAME=postgres
+DB_PASSWORD=
+
+LOG_CHANNEL=stack
+LOG_LEVEL=debug
+```
+
+**Important:** Set `APP_DEBUG=false` in production environments.
+
+---
+
+**Built with:** Laravel • PostgreSQL • RESTful API Design
+
+**Last Updated:** February 9, 2024
